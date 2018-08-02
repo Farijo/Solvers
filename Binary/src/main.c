@@ -5,10 +5,8 @@
 #include <stdio.h>
 #include <windows.h>
 
-#define FX 155
-#define FY 440
-
-//#define WHERE_CURSOR 1
+#define FX 2222
+#define FY 433
 
 static const int mousePos[SIDE][SIDE][2] = {
   {{FX, FY},
@@ -50,67 +48,19 @@ void clic(const int pos[2]) {
   clicL(pos[0], pos[1]);
 }
 
-void getColors() {
-  HDC hdc, hdcTemp;
-  RECT rect;
-  BYTE* bitPointer;
-  int x, y, i;
-  int red, green, blue, alpha;
-
-  hdc = GetDC(HWND_DESKTOP);
-  GetWindowRect(HWND_DESKTOP, &rect);
-  int MAX_WIDTH = rect.right;
-  int MAX_HEIGHT = rect.bottom;
-
-  hdcTemp = CreateCompatibleDC(hdc);
-
-  BITMAPINFO bitmap;
-  bitmap.bmiHeader.biSize = sizeof(bitmap.bmiHeader);
-  bitmap.bmiHeader.biWidth = MAX_WIDTH;
-  bitmap.bmiHeader.biHeight = MAX_HEIGHT;
-  bitmap.bmiHeader.biPlanes = 1;
-  bitmap.bmiHeader.biBitCount = 32;
-  bitmap.bmiHeader.biCompression = BI_RGB;
-  bitmap.bmiHeader.biSizeImage = MAX_WIDTH * 4 * MAX_HEIGHT;
-  bitmap.bmiHeader.biClrUsed = 0;
-  bitmap.bmiHeader.biClrImportant = 0;
-  HBITMAP hBitmap2 = CreateDIBSection(hdcTemp, &bitmap, DIB_RGB_COLORS, (void**)(&bitPointer), NULL, NULL);
-  SelectObject(hdcTemp, hBitmap2);
-  BitBlt(hdcTemp, 0, 0, MAX_WIDTH, MAX_HEIGHT, hdc, 0, 0, SRCCOPY);
-
-  for (i=0; i<(MAX_WIDTH * 4 * MAX_HEIGHT); i+=4) {
-    red = (int)bitPointer[i];
-    green = (int)bitPointer[i+1];
-    blue = (int)bitPointer[i+2];
-    alpha = (int)bitPointer[i+3];
-    if(red == 0)return;
-    printf("%d %d %d\n",red, green, blue);
-  }
-}
-
 int main(int argc, char **argv) {
   struct state state;
   initState(&state);
   struct soluceNode tree;
   initNode(&tree);
   char e[SIDE][SIDE] = {
-    "jmzmr",
-    "rivvj",
-    "ovcrm",
-    "ivcoi",
-    "cbivi"
+    "-----",
+    "-----",
+    "-----",
+    "-----",
+    "-----"
   };
   memcpy(state.element, e, SIDE*SIDE);
-
-  #ifdef WHERE_CURSOR
-
-  POINT p;
-  while(1) {
-    GetCursorPos(&p);
-    printf("%ld %ld\n",p.x, p.y);
-  }
-
-  #endif
 
   FILE *fp = fopen("state", "r");
   char ch;
@@ -143,10 +93,11 @@ int main(int argc, char **argv) {
     int x, y;
     x = ATTEMPT_TODO[i][0];
     y = ATTEMPT_TODO[i][1];
-    if(x != -1 && y != -1)
+    if(x != -1 && y != -1) {
       clic(mousePos[x][y]);
+    }
   }
-  clicL(1050, 400);
+  clicL(1300, 630);
 
   return 0;
 }
